@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -9,11 +8,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import Password from "@/components/ui/Password";
+import config from "@/config";
 import { cn } from "@/lib/utils";
 import { useLoginMutation } from "@/redux/features/auth/auth.api";
-import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
-
+import { type FieldValues, type SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -22,16 +20,30 @@ export function LoginForm({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const navigate = useNavigate();
-  const form = useForm();
+  const form = useForm({
+    //! For development only
+    defaultValues: {
+      email: "mirhussainmurtaza@gmail.com",
+      password: "12345678",
+    },
+  });
   const [login] = useLoginMutation();
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
       const res = await login(data).unwrap();
-      console.log(res);
-    } catch (err: any) {
+
+      if (res.success) {
+        toast.success("Logged in successfully");
+        navigate("/");
+      }
+    } catch (err) {
       console.error(err);
 
-      if (err.status === 401) {
+      if (err.data.message === "Password does not match") {
+        toast.error("Invalid credentials");
+      }
+
+      if (err.data.message === "User is not verified") {
         toast.error("Your account is not verified");
         navigate("/verify", { state: data.email });
       }
@@ -74,7 +86,12 @@ export function LoginForm({
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Password {...field} />
+                    <Input
+                      type="password"
+                      placeholder="********"
+                      {...field}
+                      value={field.value || ""}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -93,7 +110,9 @@ export function LoginForm({
           </span>
         </div>
 
+        {/*//* http://localhost:5000/api/v1/auth/google */}
         <Button
+          onClick={() => window.open(`${config.baseUrl}/auth/google`)}
           type="button"
           variant="outline"
           className="w-full cursor-pointer"
