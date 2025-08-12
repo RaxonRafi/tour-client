@@ -91,11 +91,11 @@ export default function Verify() {
   };
 
   //! Needed - Turned off for development
-  //   useEffect(() => {
-  //     if (!email) {
-  //       navigate("/");
-  //     }
-  //   }, [email]);
+    // useEffect(() => {
+    //   if (!email) {
+    //     navigate("/");
+    //   }
+    // }, [email]);
 
   useEffect(() => {
     if (!email || !confirmed) {
@@ -104,7 +104,6 @@ export default function Verify() {
 
     const timerId = setInterval(() => {
       setTimer((prev) => (prev > 0 ? prev - 1 : 0));
-      console.log("Tick");
     }, 1000);
 
     return () => clearInterval(timerId);
