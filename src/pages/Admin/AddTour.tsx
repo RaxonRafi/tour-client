@@ -33,7 +33,6 @@ import {
 
 import { Textarea } from "@/components/ui/textarea";
 import type { FileMetadata } from "@/hooks/use-file-upload";
-
 import { cn } from "@/lib/utils";
 import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
 import {
@@ -41,7 +40,6 @@ import {
   useGetTourTypesQuery,
 } from "@/redux/features/Tour/tour.api";
 import type { IErrorResponse } from "@/types";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format, formatISO } from "date-fns";
 import { CalendarIcon, Plus, Trash2 } from "lucide-react";
@@ -85,7 +83,7 @@ export default function AddTour() {
     })
   );
 
-  const tourTypeOptions = tourTypeData?.map(
+  const tourTypeOptions = tourTypeData?.data?.map(
     (tourType: { _id: string; name: string }) => ({
       value: tourType._id,
       label: tourType.name,
@@ -95,39 +93,44 @@ export default function AddTour() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "Cox's Bazar Beach Adventure",
+      title: "Dhaka to Rajshahi Heritage Tour",
       description:
-        "Experience the world's longest natural sea beach with golden sandy shores, crystal clear waters, and breathtaking sunsets. Enjoy beach activities, local seafood, and explore nearby attractions including Himchari National Park and Inani Beach.",
-      location: "Cox's Bazar",
-      costFrom: "15000",
+        "Discover the historical treasures of Rajshahi, known as the 'Silk City' of Bangladesh. Explore ancient Buddhist ruins at Paharpur, visit the magnificent Puthia Palace complex, and experience the rich cultural heritage of north Bengal. Perfect for history enthusiasts and cultural explorers.",
+      location: "Rajshahi",
+      costFrom: "12000",
       startDate: new Date(),
       endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days later
       departureLocation: "Dhaka",
-      arrivalLocation: "Cox's Bazar",
+      arrivalLocation: "Rajshahi",
       included: [
         { value: "Accommodation for 2 nights" },
         { value: "All meals (breakfast, lunch, dinner)" },
         { value: "Transportation (AC bus)" },
         { value: "Professional tour guide" },
+        { value: "Entry fees to all historical sites" },
+        { value: "Paharpur monastery visit" },
       ],
       excluded: [
         { value: "Personal expenses" },
         { value: "Extra activities not mentioned" },
         { value: "Travel insurance" },
+        { value: "Shopping expenses" },
+        { value: "Photography charges at monuments" },
       ],
       amenities: [
-        { value: "Air-conditioned rooms" },
+        { value: "Comfortable hotel rooms" },
         { value: "Free WiFi" },
-        { value: "Swimming pool access" },
-        { value: "Beach access" },
+        { value: "Air conditioning" },
+        { value: "Local transportation" },
+        { value: "Cultural performance evening" },
       ],
       tourPlan: [
-        { value: "Day 1: Arrival and beach exploration" },
-        { value: "Day 2: Himchari National Park visit" },
-        { value: "Day 3: Inani Beach and departure" },
+        { value: "Day 1: Arrival in Rajshahi and Puthia Palace complex tour" },
+        { value: "Day 2: Paharpur Buddhist monastery and Mahasthangarh visit" },
+        { value: "Day 3: Rajshahi city tour and silk weaving centers" },
       ],
-      maxGuest: "25",
-      minAge: "5",
+      maxGuest: "20",
+      minAge: "8",
       division: "",
       tourType: "",
     },
